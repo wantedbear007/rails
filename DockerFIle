@@ -1,0 +1,8 @@
+FROM node:20.13.1-alpine
+
+RUN mkdir -p /usr/src/swift-api && chown -R node:node /usr/src/swift-api
+
+WORKDIR /usr/src/swift-api
+
+COPY package.json yarn.lock ./
+

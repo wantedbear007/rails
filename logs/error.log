@@ -1,0 +1,4 @@
+2024-12-01 08:33:58 [ERROR]: sfsd
+2024-12-05 22:46:06 [ERROR]: AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1118:18)
+    at afterConnectMultiple (node:net:1685:7)

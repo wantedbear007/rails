@@ -1,0 +1,54 @@
+{
+  "node": ">=20.17.0",
+  "name": "rails",
+  "version": "1.0.0",
+  "description": "Api handler for railway booking.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc && node dist/index.js",
+    "dev": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/index.js\"",
+    "fmt": "prettier --write \"src/**/*.ts\"",
+    "lint": "eslint . --ext .ts",
+    "pre-commit": "lint-staged",
+    "migrate": "npx knex migrate:latest --knexfile ./src/database/knexfile.ts",
+    "seed": "npx knex seed:run --knexfile ./src/database/knexfile.ts"
+  },
+  "keywords": [
+    "news",
+    "shorts"
+  ],
+  "author": "wantedbear007",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/knex": "^0.15.2",
+    "@types/node": "^22.10.1",
+    "@types/pg": "^8.11.10",
+    "@types/winston": "^2.4.4",
+    "eslint": "^9.15.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.10",
+    "nodemon": "^3.1.7",
+    "prettier": "^3.4.1",
+    "ts-node": "^10.9.2",
+    "tsc-watch": "^6.2.1",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.1",
+    "express-rate-limit": "^7.4.1",
+    "jsonwebtoken": "^9.0.2",
+    "knex": "^3.1.0",
+    "objection": "^3.1.5",
+    "pg": "^8.13.1",
+    "winston": "^3.17.0"
+  }
+}
