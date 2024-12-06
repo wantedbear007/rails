@@ -174,7 +174,7 @@ export class AdminControllers {
       await pgPoolInstance.query(query, [numberOfSeats, trainID]);
       res.status(HttpStatusCode.ACCEPTED).json(
         new ApiResponse(true, {
-          message: "abc",
+          message: "Updated data sucessfully.",
         })
       );
     } catch (err) {
