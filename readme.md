@@ -2,14 +2,23 @@
 
 This repository contains the backend implementation for a train booking system using Node.js and TypeScript. The system includes functionalities for user authentication, train management, ticket booking, and more.
 
+## IMPORTANT (FOR BOOKING)
+```
+const currentMutex = await mutexInstance.acquire(); // mutex for race condition
+
+RDBMS Transaction i.e BEGIN & COMMIT for rollback safety.
+```
+
 ## Features
 
 - **Admin Management**:
+
   - Add new trains.
   - Modify train seat availability.
   - Admin login with API key verification.
 
 - **User Management**:
+
   - User registration and login.
   - Token-based authentication.
 
@@ -21,25 +30,27 @@ This repository contains the backend implementation for a train booking system u
 
 ### **Admin Routes**
 
-| Endpoint           | Method | Description                              |
-|--------------------|--------|------------------------------------------|
-| `/admin/login`     | POST   | Login as an admin.                      |
-| `/admin/addTrain`  | POST   | Add a new train.                        |
-| `/admin/modifyTrain` | POST | Modify available seats for a train.     |
-
+| Endpoint             | Method | Description                         |
+| -------------------- | ------ | ----------------------------------- |
+| `/admin/login`       | POST   | Login as an admin.                  |
+| `/admin/addTrain`    | POST   | Add a new train.                    |
+| `/admin/modifyTrain` | POST   | Modify available seats for a train. |
 
 ### **User Routes**
 
-| Endpoint           | Method | Description                              |
-|--------------------|--------|------------------------------------------|
-| `/login`     | POST   | Login as an user.                      |
-| `/register`  | POST   | Add a new user.                        |
-| `/search` | POST | search trains    |
-| `/book` | POST | book trains    |
+| Endpoint    | Method | Description       |
+| ----------- | ------ | ----------------- |
+| `/login`    | POST   | Login as an user. |
+| `/register` | POST   | Add a new user.   |
+| `/search`   | POST   | search trains     |
+| `/book`     | POST   | book trains       |
 
+<!--IMP -->
 
 #### Example Payloads
+
 **Login**:
+
 ```json
 {
   "username": "admin",
@@ -102,3 +113,4 @@ Login:
   "password": "securepassword"
 }
 
+```
