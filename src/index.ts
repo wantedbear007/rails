@@ -7,6 +7,7 @@ import pg from "pg";
 import adminRoutes from "./routes/admin.routes";
 import userRoutes from "./routes/user.routes";
 import { pgInstance } from "./database";
+import bookingRoute from "./routes/booking.routes";
 
 const app: Express = express();
 
@@ -96,4 +97,5 @@ app.get("/", async (req: Request, res: Response) => {
 
 app.use("/a", adminRoutes);
 app.use("/", userRoutes);
+app.use("/", bookingRoute);
 // export default pgInstance;

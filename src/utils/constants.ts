@@ -1,6 +1,3 @@
-
-
-
 export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const passwordLength: number = 5;
@@ -9,9 +6,11 @@ export const hashSalt: number = 8;
 
 export enum TableName {
   userTable = "users",
-  trains = "trains"
+  trains = "trains",
+  trainRoute = "train_route",
+  stationRoute = "station_route",
+  routes = "routes"
 }
-
 
 export enum HttpStatusCode {
   OK = 200,
@@ -28,5 +27,5 @@ export enum HttpStatusCode {
   NOT_IMPLEMENTED = 501,
   BAD_GATEWAY = 502,
   SERVICE_UNAVAILABLE = 503,
-  GATEWAY_TIMEOUT = 504
+  GATEWAY_TIMEOUT = 504,
 }

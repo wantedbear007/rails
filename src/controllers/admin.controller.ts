@@ -64,7 +64,11 @@ export class AdminControllers {
       }
 
 
-      let query: string = `INSERT INTO ${TableName.trains} (train_name, total_capacity, speeed)`
+      // checking routes
+      let query: string =  `SELECT * FROM {}`
+
+
+      // let query: string = `INSERT INTO ${TableName.trains} (train_name, total_capacity, speeed)`
 
 
 
@@ -76,4 +80,6 @@ export class AdminControllers {
       return;
     }
   }
+
+  // ADD ROUTE
 }
