@@ -3,18 +3,18 @@ import express, { Express, Response, Request } from "express";
 import cors from "cors";
 import adminRoutes from "./routes/admin.routes";
 import userRoutes from "./routes/user.routes";
+import { pgInstance } from "./database";
 import bookingRoute from "./routes/booking.routes";
 import { Mutex } from "async-mutex";
-import { pgPoolInstance } from "./database";
 
 const app: Express = express();
 export const mutexInstance: Mutex = new Mutex();
 
 async function startServices(): Promise<void> {
-  // await pgInstance.connect();
-  await pgPoolInstance.connect();
+  await pgInstance.connect();
+
   try {
-    const res = await pgPoolInstance.query("SELECT $1::text as message", [
+    const res = await pgInstance.query("SELECT $1::text as message", [
       "Hello world!",
     ]);
   } catch (err) {

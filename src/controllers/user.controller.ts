@@ -8,7 +8,7 @@ import {
 } from "../utils/constants";
 import ApiResponse from "../utils/apiResponse";
 import * as bcrypt from "bcrypt";
-import { pgInstance, pgPoolInstance } from "../database";
+import { pgPoolInstance } from "../database";
 import { generateToken } from "../handlers/jwt.handler";
 
 export class UserController {
