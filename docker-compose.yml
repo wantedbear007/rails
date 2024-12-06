@@ -12,6 +12,25 @@ services:
       - db:/var/lib/postgresql/data
     ports:
       - "54320:5432"
+
+  app:
+    container_name: rails
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=swift
+    depends_on:
+      - db
+    volumes:
+      - .:/usr/src/app
+
 volumes:
   db:
     driver: local

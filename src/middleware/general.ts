@@ -10,11 +10,5 @@ export class GeneralMiddlewares {
     }
 
     next();
-
-    // if (mutexInstance.isLocked()) {
-
-    // }
   }
 }
-
-
