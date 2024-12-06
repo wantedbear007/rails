@@ -10,10 +10,10 @@ export const generateToken = (password: object): string => {
   });
 };
 
-export const verifyToken = (token: string): jwt.JwtPayload | string => {
+export const verifyToken = (token: string) => {
   try {
     return jwt.verify(token, jwtSecret);
   } catch (err) {
-    return "";
+    return null;
   }
 };

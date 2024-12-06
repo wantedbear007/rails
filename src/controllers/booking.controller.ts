@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { HttpStatusCode, TableName } from "../utils/constants";
 import ApiResponse from "../utils/apiResponse";
 import { pgPoolInstance } from "../database";
+import { mutexInstance } from "..";
 
 export class BookingController {
   // to search train between routes
@@ -44,8 +45,12 @@ export class BookingController {
         return;
       }
 
-      console.log("response is ", response);
-      res.status(200).json(response);
+      const allTrains = response.rows.map((val) => val);
+      res.status(HttpStatusCode.ACCEPTED).json(
+        new ApiResponse(true, {
+          data: allTrains,
+        })
+      );
 
       return;
     } catch (err) {
@@ -60,9 +65,83 @@ export class BookingController {
 
   // to book trains
   async book(req: Request, res: Response) {
+    // to handle race condtions !
+    const currentMutex = await mutexInstance.acquire();
     try {
+      const { from, to, train_id, date, user_id, name} = req.body;
+      // validators
+      if (!from || !to || !train_id || !date) {
+        res.status(HttpStatusCode.BAD_REQUEST).json(
+          new ApiResponse(false, {
+            message: "All fields are required !",
+          })
+        );
+        return;
+      }
+
+      if (typeof train_id != "number" || !Number.isInteger(train_id)) {
+        res.status(HttpStatusCode.BAD_REQUEST).json(
+          new ApiResponse(false, {
+            message: "Train id is not valid !",
+          })
+        );
+        return;
+      }
+
+      const { trains, bookings } = TableName;
+
+      // creating a transaction
+
+      await pgPoolInstance.query('BEGIN');
+
+      // First operation: Update the train's total capacity
+      const updateQuery = `
+          UPDATE trains
+          SET total_capacity = total_capacity - 1
+          WHERE train_id = $1;
+      `;
+      await pgPoolInstance.query(updateQuery, [train_id]);
+
+      // Second operation: Insert into bookings
+      const insertQuery = `
+          INSERT INTO bookings (user_id, from_location, to_location, doj, passenger_name, price_paid)
+          VALUES ($1, $2, $3, $4, $5, $6);
+      `;
+      await pgPoolInstance.query(insertQuery, [user_id, from, to,date, name, 10]);
+
+      // Commit transaction
+      const abc = await pgPoolInstance.query('COMMIT');
+
+      // let query: string = `
+      // BEGIN;
+
+      // UPDATE ${trains}
+      // SET total_capacity = total_capacity - 1
+      // WHERE train_id = $1;
+
+      // INSERT INTO ${bookings}
+      // (user_id, from_location, to_location, doj, passenger_name, paid_price)
+      // VALUES
+      // ($2, $3, $4, $5, $6, $7);
+
+      // COMMIT;      
+      // `;
+
+      // const response = pgPoolInstance.query(query, [train_id, user_id, from, to, date, name, 100])
+
+
+      res.status(200).json(abc)
+      // let query: string = `SELECT * FROM ${trains}`;
     } catch (err) {
+      console.log("error is: ", err)
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(
+        new ApiResponse(false, {
+          message: "Internal server error",
+        })
+      );
+      return;
     } finally {
+      currentMutex();
     }
   }
 }

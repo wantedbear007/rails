@@ -9,7 +9,8 @@ export enum TableName {
   trains = "trains",
   trainRoute = "train_route",
   stationRoute = "station_route",
-  routes = "routes"
+  routes = "routes",
+  bookings = "bookings"
 }
 
 export enum HttpStatusCode {

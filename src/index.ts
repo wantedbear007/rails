@@ -8,46 +8,21 @@ import adminRoutes from "./routes/admin.routes";
 import userRoutes from "./routes/user.routes";
 import { pgInstance } from "./database";
 import bookingRoute from "./routes/booking.routes";
+import { Mutex } from "async-mutex";
 
 const app: Express = express();
+export const mutexInstance: Mutex = new Mutex();
 
-// const client = new Client()
-// console.log("cl", client)
-
-// const pgInstance = new Client({
-//   user: "postgres",
-//   password: "postgres",
-//   host: "localhost",
-//   port: 54320,
-//   database: "trainn",
-// });
-/**
- * init knex and start database.
- */
 async function startServices(): Promise<void> {
   await pgInstance.connect();
-
-  // const { Client } = pg
-  // // const client = new Client()
-  // // console.log("cl", client)
-
-  // const pgInstance = new Client({
-  //   user: 'postgres',
-  //   password: 'postgres',
-  //   host: 'localhost',
-  //   port: 54320,
-  //   database: 'trainn',
-  // })
-  // await pgInstance.connect()
 
   try {
     const res = await pgInstance.query("SELECT $1::text as message", [
       "Hello world!",
     ]);
 
+
     const lol = await pgInstance.query("select * from stations");
-    // console.log(lol.rows);
-    //  console.log(res.rows[0].message) // Hello world!
   } catch (err) {
     console.error(err);
   } finally {
@@ -98,4 +73,3 @@ app.get("/", async (req: Request, res: Response) => {
 app.use("/a", adminRoutes);
 app.use("/", userRoutes);
 app.use("/", bookingRoute);
-// export default pgInstance;
