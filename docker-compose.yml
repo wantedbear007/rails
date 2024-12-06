@@ -1,15 +1,15 @@
 version: '3.9'
 services:
   db:
-    container_name: rails
+    container_name: dba
     image: postgres:latest
     restart: always
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=swift
-    volumes:
-      - db:/var/lib/postgresql/data
+      - POSTGRES_DB=trainn
+    # volumes:
+      # - db:/var/lib/postgresql/data
     ports:
       - "54320:5432"
 
@@ -22,10 +22,10 @@ services:
       - "3000:3000"
     environment:
       - DB_HOST=db
-      - DB_PORT=5432
+      - DB_PORT=54320
       - DB_USER=postgres
       - DB_PASSWORD=postgres
-      - DB_NAME=swift
+      - DB_NAME=trainn
       - JWT_SECRET=random12344
       - JWT_EXPIRATION=1h
       - ADMIN_USERNAME=admin
