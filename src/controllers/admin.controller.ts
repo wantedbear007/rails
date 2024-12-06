@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { HttpStatusCode, TableName } from "../utils/constants";
 import ApiResponse from "../utils/apiResponse";
 import { generateToken } from "../handlers/jwt.handler";
+import { pgPoolInstance } from "../database";
 
 export class AdminControllers {
   // to verify admin login
@@ -49,11 +50,26 @@ export class AdminControllers {
   // to add new trains to the platform
   async addTrain(req: Request, res: Response) {
     try {
-      const { trainName, trainNumber, fairPerKm, fromStation, toStation } = req.body;
-
+      const {
+        trainName,
+        fairPerKm,
+        fromStation,
+        toStation,
+        seates,
+        speed,
+        travelTime,
+      } = req.body;
 
       // validations
-      if (!trainName || !trainNumber || !fromStation || !fairPerKm || !toStation) {
+      if (
+        !trainName ||
+        !fromStation ||
+        !fairPerKm ||
+        !toStation ||
+        !seates ||
+        !speed ||
+        !travelTime
+      ) {
         res.status(HttpStatusCode.BAD_REQUEST).json(
           new ApiResponse(false, {
             message: "All fields are required !",
@@ -63,17 +79,106 @@ export class AdminControllers {
         return;
       }
 
-      const {routes, trains} = TableName;
+      const { routes, trains, trainRoute } = TableName;
 
       // checking routes
-      let query: string =  `SELECT * FROM {}`
+      let query: string = `
+        SELECT * FROM ${routes}
+        WHERE start_station = $1
+        AND end_station = $2
+        
+      `;
 
+      let response = await pgPoolInstance.query(query, [
+        fromStation,
+        toStation,
+      ]);
 
+      if ((response.rowCount ?? 0) <= 0) {
+        res.status(HttpStatusCode.CONFLICT).json(
+          new ApiResponse(false, {
+            message: "No such routes exist, add new route.",
+          })
+        );
 
+        return;
+      }
 
+      // // transaction to add train
+      await pgPoolInstance.query("BEGIN");
 
-      // register in database
+      // adding new train
+      const insertTrainQuery: string = `
+      
+      INSERT INTO ${trains} (train_name, total_capacity, speed, price_per_km)
+      VALUES ($1, $2, $3, $4)
+      RETURNING train_id
+      
+      `;
+
+      let trainId = await pgPoolInstance.query(insertTrainQuery, [
+        trainName,
+        seates,
+        speed,
+        fairPerKm,
+      ]);
+
+      const insertIntoRoutes: string = `
+        INSERT INTO ${trainRoute} (train_id, route_id, distance, travel_time)
+        VALUES ($1, $2, (SELECT total_km FROM ${routes} WHERE route_id = $3), $4)
+      `;
+
+      await pgPoolInstance.query(insertIntoRoutes, [
+        trainId.rows[0].train_id,
+        response.rows[0].route_id,
+        response.rows[0].route_id,
+        travelTime,
+      ]);
+
+      await pgPoolInstance.query("COMMIT");
+
+      res.status(HttpStatusCode.ACCEPTED).json(
+        new ApiResponse(true, {
+          message: "Train has beenn added sucessfully ",
+        })
+      );
+      return;
     } catch (err) {
+      // console.log(err);
+      res.status(HttpStatusCode.INTERNAL_SERVER_ERROR);
+      return;
+    }
+  }
+
+  //  to edit avaiable seats
+  async modityTrainSeates(req: Request, res: Response) {
+    try {
+      const { trainID, numberOfSeats } = req.body;
+
+      if (!trainID || !numberOfSeats) {
+        res.status(HttpStatusCode.BAD_REQUEST).json(
+          new ApiResponse(false, {
+            message: "All fields are required !",
+          })
+        );
+        return;
+      }
+
+      const { trains } = TableName;
+
+      let query: string = `
+      UPDATE ${trains}
+      SET total_capacity = $1
+      WHERE train_id = $2
+      `;
+      await pgPoolInstance.query(query, [numberOfSeats, trainID]);
+      res.status(HttpStatusCode.ACCEPTED).json(
+        new ApiResponse(true, {
+          message: "abc",
+        })
+      );
+    } catch (err) {
+      console.log(err);
       res.status(HttpStatusCode.INTERNAL_SERVER_ERROR);
       return;
     }

@@ -18,6 +18,7 @@ export class AdminMiddleware {
 
       if (apiKey == process.env.ADMIN_API_KEY) {
         next();
+        return;
       }
 
       res.status(HttpStatusCode.METHOD_NOT_ALLOWED).json(

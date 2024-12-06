@@ -16,4 +16,5 @@ bookingRoute.post(
   controller.book
 );
 
+
 export default bookingRoute;
