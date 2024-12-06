@@ -27,6 +27,17 @@ This repository contains the backend implementation for a train booking system u
 | `/admin/addTrain`  | POST   | Add a new train.                        |
 | `/admin/modifyTrain` | POST | Modify available seats for a train.     |
 
+
+### **User Routes**
+
+| Endpoint           | Method | Description                              |
+|--------------------|--------|------------------------------------------|
+| `/login`     | POST   | Login as an user.                      |
+| `/register`  | POST   | Add a new user.                        |
+| `/search` | POST | search trains    |
+| `/book` | POST | book trains    |
+
+
 #### Example Payloads
 **Login**:
 ```json
