@@ -74,6 +74,7 @@ export class UserController {
       const token = generateToken({ name: _name, email: _email });
 
       res.status(HttpStatusCode.CREATED).json(
+        
         new ApiResponse(true, {
           data: token,
           message: "Account created successfully",
@@ -82,7 +83,7 @@ export class UserController {
 
       return;
     } catch (err) {
-      // console.log(err);
+      console.log(err);
       res
         .status(HttpStatusCode.INTERNAL_SERVER_ERROR)
         .json(

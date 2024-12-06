@@ -1,17 +1,5 @@
 version: '3.9'
 services:
-  db:
-    container_name: db
-    image: postgres:latest
-    restart: always
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=trainn
-    # volumes:
-      # - db:/var/lib/postgresql/data
-    ports:
-      - "54320:5432"
 
   app:
     container_name: rails
@@ -22,7 +10,7 @@ services:
       - "3000:3000"
     environment:
       - DB_HOST=db
-      - DB_PORT=54320
+      - DB_PORT=5432
       - DB_USER=postgres
       - DB_PASSWORD=postgres
       - DB_NAME=trainn
@@ -37,6 +25,30 @@ services:
     volumes:
       - .:/usr/src/app
 
+    networks:
+      - postgres
+
+  db:
+    container_name: db
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=trainn
+    volumes:
+      - db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+
+
+
 volumes:
   db:
     driver: local
+
+networks:
+  postgres:
+    driver: bridge

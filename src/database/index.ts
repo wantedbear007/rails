@@ -6,7 +6,7 @@ const pgInstance = new Client({
   // user: "postgres",
   // password: "postgres",
   // host: "localhost",
-  port: 54320,
+  port: 5432,
   // database: "trainn",
   host: process.env.DB_HOST,
   // port: parseInt(process.env.DB_PORT || "5432"),

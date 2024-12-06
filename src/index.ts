@@ -11,16 +11,18 @@ const app: Express = express();
 export const mutexInstance: Mutex = new Mutex();
 
 async function startServices(): Promise<void> {
-  await pgInstance.connect();
+  console.log("helllllllllllll--------------------------------------");
 
   try {
-    const res = await pgInstance.query("SELECT $1::text as message", [
-      "Hello world!",
-    ]);
+    await pgInstance.connect();
+    // const res = await pgInstance.query("SELECT $1::text as message", [
+    //   "Hello world!",
+    // ]);
   } catch (err) {
+    // console.log("000000000000000000000000000000000000000000000000");
+    // console.log(process.env.DB_HOST);
+    // console.log("00000000000000000000000000000000000000000000");
     console.error(err);
-  } finally {
-    // await pgInstance.end()
   }
 }
 

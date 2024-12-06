@@ -1,0 +1,19 @@
+
+ALTER TABLE Trains
+ADD COLUMN price_per_km DECIMAL(10, 2);
+
+
+INSERT INTO Trains (train_name, train_type, total_capacity, speed, price_per_km)
+VALUES
+    ('Rajdhani Express', 'Express', 1200, 110, 15.00),
+    ('Shatabdi Express', 'Superfast', 800, 130, 12.00),
+    ('Intercity Express', 'Intercity', 600, 90, 8.00),
+    ('Local Train', 'Local', 500, 40, 5.00),
+    ('Shatabdi Express', 'Express', 1500, 130, 12.00),
+    ('Rajdhani Express', 'Luxury', 1000, 140, 15.00),
+    ('Deccan Queen', 'Express', 1000, 100, 10.00),
+    ('Duronto Express', 'Express', 900, 150, 18.00),
+    ('Vande Bharat Express', 'Semi High-Speed', 1200, 160, 20.00),
+    ('Maharashtra Express', 'Express', 1100, 100, 14.00);
+
+

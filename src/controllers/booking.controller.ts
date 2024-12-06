@@ -108,8 +108,8 @@ export class BookingController {
       `;
 
       const aaa = await pgPoolInstance.query(kmsQuery, [
-        "New York Central",
-        "Chicago Union Station",
+        from,
+        to,
       ]);
 
       // adding to bookings
