@@ -1,13 +1,15 @@
 
 
-  /**
-   * Table names 
-   */
-export const UNSUMMARIZED_TABLE_NAME: string = "unsummarized";
-export const SUMMARIZED_TABLE_NAME: string = "summarized";
 
+export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+export const passwordLength: number = 5;
 
+export const hashSalt: number = 8;
+
+export enum TableName {
+  userTable = "users"
+}
 
 
 export enum HttpStatusCode {

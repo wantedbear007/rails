@@ -3,41 +3,56 @@ import express, { Express, Response, Request } from "express";
 import cors from "cors";
 import { corsOptions } from "./middleware/config";
 // import summarizedRouter from "./routes/summarized.routes";
-import pg from 'pg'
+import pg from "pg";
 import logger from "./utils/logger";
 import adminRoutes from "./routes/admin.routes";
+import userRoutes from "./routes/user.routes";
+import { pgInstance } from "./database";
 
 const app: Express = express();
+
+// const client = new Client()
+// console.log("cl", client)
+
+// const pgInstance = new Client({
+//   user: "postgres",
+//   password: "postgres",
+//   host: "localhost",
+//   port: 54320,
+//   database: "trainn",
+// });
 /**
  * init knex and start database.
  */
 async function startServices(): Promise<void> {
+  await pgInstance.connect();
 
-const { Client } = pg
-// const client = new Client()
-// console.log("cl", client)
+  // const { Client } = pg
+  // // const client = new Client()
+  // // console.log("cl", client)
 
-const client = new Client({
-  user: 'postgres',
-  password: 'postgres',
-  host: 'localhost',
-  port: 54320,
-  database: 'trainn',
-})
-await client.connect()
- 
-try {
-   const res = await client.query('SELECT $1::text as message', ['Hello world!'])
+  // const pgInstance = new Client({
+  //   user: 'postgres',
+  //   password: 'postgres',
+  //   host: 'localhost',
+  //   port: 54320,
+  //   database: 'trainn',
+  // })
+  // await pgInstance.connect()
 
-   const lol = await client.query("select * from stations");
-   console.log(lol.rows)
-  //  console.log(res.rows[0].message) // Hello world!
-} catch (err) {
-   console.error(err);
-} finally {
-   await client.end()
-}
-  
+  try {
+    const res = await pgInstance.query("SELECT $1::text as message", [
+      "Hello world!",
+    ]);
+
+    const lol = await pgInstance.query("select * from stations");
+    // console.log(lol.rows);
+    //  console.log(res.rows[0].message) // Hello world!
+  } catch (err) {
+    console.error(err);
+  } finally {
+    // await pgInstance.end()
+  }
 
   // const db = Knex(
   //   process.env.PRODUCTION === "false"
@@ -81,3 +96,5 @@ app.get("/", async (req: Request, res: Response) => {
 });
 
 app.use("/a", adminRoutes);
+app.use("/", userRoutes);
+// export default pgInstance;
