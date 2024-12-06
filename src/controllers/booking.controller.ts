@@ -68,7 +68,7 @@ export class BookingController {
     // to handle race condtions !
     const currentMutex = await mutexInstance.acquire();
     try {
-      const { from, to, train_id, date, user_id, name} = req.body;
+      const { from, to, train_id, date, user_id, name } = req.body;
       // validators
       if (!from || !to || !train_id || !date) {
         res.status(HttpStatusCode.BAD_REQUEST).json(
@@ -88,52 +88,56 @@ export class BookingController {
         return;
       }
 
-      const { trains, bookings } = TableName;
+      const { trains, bookings, routes } = TableName;
 
-      // creating a transaction
+      // creating a transactionG
+      await pgPoolInstance.query("BEGIN");
 
-      await pgPoolInstance.query('BEGIN');
-
-      // First operation: Update the train's total capacity
+      // update available seats
       const updateQuery = `
-          UPDATE trains
+          UPDATE ${trains}
           SET total_capacity = total_capacity - 1
           WHERE train_id = $1;
       `;
       await pgPoolInstance.query(updateQuery, [train_id]);
 
-      // Second operation: Insert into bookings
-      const insertQuery = `
-          INSERT INTO bookings (user_id, from_location, to_location, doj, passenger_name, price_paid)
-          VALUES ($1, $2, $3, $4, $5, $6);
+      const kmsQuery = `
+       SELECT total_km
+       FROM ${routes}
+       WHERE start_station = $1 AND  end_station = $2
       `;
-      await pgPoolInstance.query(insertQuery, [user_id, from, to,date, name, 10]);
+
+      const aaa = await pgPoolInstance.query(kmsQuery, [
+        "New York Central",
+        "Chicago Union Station",
+      ]);
+
+      // adding to bookings
+      const insertQuery = `
+          INSERT INTO ${bookings} (user_id, from_location, to_location, doj, passenger_name, price_paid)
+          VALUES ($1, $2, $3, $4, $5, (SELECT price_per_km from ${trains} WHERE train_id = $6) * $7);
+      `;
+
+      await pgPoolInstance.query(insertQuery, [
+        user_id,
+        from,
+        to,
+        date,
+        name,
+        train_id,
+        aaa.rows[0].total_km,
+      ]);
 
       // Commit transaction
-      const abc = await pgPoolInstance.query('COMMIT');
+      await pgPoolInstance.query("COMMIT");
 
-      // let query: string = `
-      // BEGIN;
-
-      // UPDATE ${trains}
-      // SET total_capacity = total_capacity - 1
-      // WHERE train_id = $1;
-
-      // INSERT INTO ${bookings}
-      // (user_id, from_location, to_location, doj, passenger_name, paid_price)
-      // VALUES
-      // ($2, $3, $4, $5, $6, $7);
-
-      // COMMIT;      
-      // `;
-
-      // const response = pgPoolInstance.query(query, [train_id, user_id, from, to, date, name, 100])
-
-
-      res.status(200).json(abc)
-      // let query: string = `SELECT * FROM ${trains}`;
+      res.status(HttpStatusCode.CREATED).json(
+        new ApiResponse(true, {
+          message: "Your ticket was sucessfully booked !",
+        })
+      );
     } catch (err) {
-      console.log("error is: ", err)
+      console.log("error is: ", err);
       res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(
         new ApiResponse(false, {
           message: "Internal server error",
