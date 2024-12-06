@@ -7,6 +7,8 @@ This repository contains the backend implementation for a train booking system u
 const currentMutex = await mutexInstance.acquire(); // mutex for race condition
 
 RDBMS Transaction i.e BEGIN & COMMIT for rollback safety.
+
+traindb.sql is the file with dummy data and table creation !
 ```
 
 ## Features
