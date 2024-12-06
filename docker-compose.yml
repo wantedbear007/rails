@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   db:
-    container_name: swiftdb
+    container_name: rails
     image: postgres:latest
     restart: always
     environment:
