@@ -8,7 +8,8 @@ export const passwordLength: number = 5;
 export const hashSalt: number = 8;
 
 export enum TableName {
-  userTable = "users"
+  userTable = "users",
+  trains = "trains"
 }
 
 

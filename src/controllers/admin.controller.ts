@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { HttpStatusCode } from "../utils/constants";
+import { HttpStatusCode, TableName } from "../utils/constants";
 import ApiResponse from "../utils/apiResponse";
 import { generateToken } from "../handlers/jwt.handler";
 
@@ -49,8 +49,11 @@ export class AdminControllers {
   // to add new trains to the platform
   async addTrain(req: Request, res: Response) {
     try {
-      const { trainName, trainNumber, route, fairPerKm } = req.body;
-      if (!trainName || !trainNumber || !route || !fairPerKm) {
+      const { trainName, trainNumber, fairPerKm, fromStation, toStation } = req.body;
+
+
+      // validations
+      if (!trainName || !trainNumber || !fromStation || !fairPerKm || !toStation) {
         res.status(HttpStatusCode.BAD_REQUEST).json(
           new ApiResponse(false, {
             message: "All fields are required !",
@@ -59,6 +62,13 @@ export class AdminControllers {
 
         return;
       }
+
+
+      let query: string = `INSERT INTO ${TableName.trains} (train_name, total_capacity, speeed)`
+
+
+
+
 
       // register in database
     } catch (err) {

@@ -4,7 +4,6 @@ import cors from "cors";
 import { corsOptions } from "./middleware/config";
 // import summarizedRouter from "./routes/summarized.routes";
 import pg from "pg";
-import logger from "./utils/logger";
 import adminRoutes from "./routes/admin.routes";
 import userRoutes from "./routes/user.routes";
 import { pgInstance } from "./database";
@@ -74,7 +73,7 @@ async function startServices(): Promise<void> {
 startServices().then(() => {
   const port: number | string = process.env.PORT || 3000;
   app.listen(port, () => {
-    logger.info(
+    console.log(
       `[server]: Server is running at http://${process.env.DOMAIN || "localhost"}:${port}`
     );
   });
