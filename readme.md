@@ -36,8 +36,6 @@ This repository contains the backend implementation for a train booking system u
 }
 Add Train:
 
-json
-Copy code
 {
   "trainName": "Express",
   "fairPerKm": 2.5,
@@ -49,8 +47,6 @@ Copy code
 }
 Modify Train Seats:
 
-json
-Copy code
 {
   "trainID": "123",
   "numberOfSeats": 10
@@ -62,16 +58,12 @@ Endpoint	Method	Description
 Example Payloads
 Search:
 
-json
-Copy code
 {
   "from": "Station A",
   "to": "Station B"
 }
 Book Ticket:
 
-json
-Copy code
 {
   "from": "Station A",
   "to": "Station B",
@@ -87,8 +79,6 @@ Endpoint	Method	Description
 Example Payloads
 Register:
 
-json
-Copy code
 {
   "name": "John Doe",
   "email": "john@example.com",
@@ -96,16 +86,8 @@ Copy code
 }
 Login:
 
-json
-Copy code
 {
   "email": "john@example.com",
   "password": "securepassword"
 }
-Middlewares
-AdminMiddleware
-checkApiKey: Validates the x-api-key header to ensure admin access.
-UserMiddleware
-verifyToken: Validates the token header for user authentication.
-GeneralMiddleware
-mutexAvailibality: Ensures race conditions are handled during booking.
+
